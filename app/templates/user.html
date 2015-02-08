@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>{{ user.username }}</h1>
+        {% if user.username or user.location %}
+        <p>
+            用户名:{% if user.username %}{{ user.username }}{% endif %}
+            <br />
+            {% if user.location %}
+            地 址:<a href="http://maps.google.com/?q={{ user.location }}">
+                {{ user.location }}</a>
+            {% endif %}
+        </p>
+        {% if user.about_me %}<p>自我介绍：{{ user.about_me }}</p>{% endif %}
+        <p>
+            注册时间:{{ moment(user.member_since).format('L') }}
+            <br />
+            上次登录:{{ moment(user.last_seen).format('L') }}
+        </p>
+        {% endif %}
+        <p>
+            {% if user == current_user %}
+                <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">编辑用户资料</a>
+            {% endif %}
+        </p>
+    </div>
+{% endblock %}

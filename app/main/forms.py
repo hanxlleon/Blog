@@ -1,12 +1,9 @@
 # -*- coding:utf-8 -*-
 from flask.ext.wtf import Form
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Length, Email
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Length
 
-
-class LoginForm(Form):
-    email = StringField(u'邮箱', validators=[DataRequired(), Length(1, 64),
-                                             Email()])
-    password = PasswordField(u'密码', validators=[DataRequired()])
-    remember_me = BooleanField(u'记住我的登录状态')
-    submit = SubmitField(u'登录')
+class EditProfileForm(Form):
+    location = StringField(u'地址', validators=[Length(0, 64)])
+    about_me = TextAreaField(u'自我介绍')
+    submit = SubmitField(u'提交')

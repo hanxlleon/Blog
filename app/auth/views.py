@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import render_template, redirect, url_for, request, flash
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from . import auth
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, ChangePasswordForm, ChangeEmailForm
 from .. import db
 from ..models import User
 from ..email import send_email
@@ -69,11 +69,11 @@ def confirm(token):
 # 用户已登录， 用户账户未确认， 不在认证路由中 会拦截请求
 @auth.before_app_request
 def before_request():
-    if current_user.is_authenticated() \
-            and not current_user.confirmed \
-            and request.endpoint[:5] != 'auth.' \
-            and request.endpoint != 'static':
-        return redirect(url_for('auth.unconfirmed'))
+    if current_user.is_authenticated():
+        current_user.ping()
+        if not current_user.confirmed \
+                and request.endpoint[:5] != 'auth.':
+            return redirect(url_for('auth.unconfirmed'))
 
 
 @auth.route('/unconfirmed')
@@ -90,4 +90,47 @@ def resend_confirmation():
     send_email(current_user.email, u'确认您的账户',
                'auth/email/confirm', user=current_user, token=token)
     flash(u'一封邮件已经发送到您的邮箱！')
+    return redirect(url_for('main.index'))
+
+
+@auth.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            current_user.password = form.password.data
+            db.session.add(current_user)
+            flash(u'您已经修改了您的密码！')
+            redirect(url_for('main.index'))
+        else:
+            flash(u'密码错误')
+    return render_template('auth/change_password.html', form=form)
+
+
+@auth.route('/change-email', methods=['GET', 'POST'])
+@login_required
+def change_email_request():
+    form = ChangeEmailForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            new_email = form.email.data
+            token = current_user.generate_email_change_token(new_email)
+            send_email(new_email, u'确认您的邮箱',
+                       'auth/email/change_email',
+                       user=current_user, token=token)
+            flash(u'一封邮件已经发送到您的邮箱！')
+            return redirect(url_for('main.index'))
+        else:
+            flash(u'密码错误')
+    return render_template("auth/change_email.html", form=form)
+
+
+@auth.route('/change-email/<token>')
+@login_required
+def change_email(token):
+    if current_user.change_email(token):
+       flash(u'邮箱已经更新')
+    else:
+        flash(u'无效的请求')
     return redirect(url_for('main.index'))
