@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     @property
     def password(self):
@@ -75,6 +76,14 @@ class User(UserMixin, db.Model):
         self.email = new_email
         db.session.add(self)
         return True
+
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 # Flask-Login回调函数，使用指定的标识符加载用户
 @login_manager.user_loader

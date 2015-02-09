@@ -3,24 +3,21 @@ from datetime import datetime
 from flask import render_template, abort, redirect, url_for, request, flash
 from flask.ext.login import login_required, current_user
 from . import main
-from .forms import EditProfileForm
+from .forms import EditProfileForm, PostForm
 from .. import db
-from ..models import User
+from ..models import User, Post
 
 
-# @main.route('/', methods=['GET', 'POST'])
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         user = User.query.filter_by(email=form.email.data).first()
-#         if user is not None and user.verify_password(form.password.data):
-#             login_user(user, form.remember_me.data)  # 是否记录登录状态
-#             # request.args.get('next')会记录上次的页面
-#             return redirect(request.args.get('next') or url_for('main.index'))
-#         flash(u'用户名或密码错误！')
-#     return render_template('main/login.html', form=form)
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        return redirect(url_for('.index'))
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', form=form, posts=posts)
 
 
 @main.route('/user/<username>')
@@ -28,7 +25,8 @@ def user(username):
     usr = User.query.filter_by(username=username).first()
     if usr is None:
         abort(404)
-    return render_template('user.html', user=usr)
+    posts = user.posts.order_by(Post.timestamp.desc()).all()
+    return render_template('user.html', user=usr, posts=posts)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
@@ -44,3 +42,5 @@ def edit_profile():
     form.location.data = current_user.location
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form)
+
+

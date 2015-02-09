@@ -2,6 +2,8 @@
 
 {% block page_content %}
     <div class="page-header">
+        <img class="img-rounded profile-thumbnail" src="http://avatar.3sd.me/100">
+        <div class="profile-header">
         <h1>{{ user.username }}</h1>
         {% if user.username or user.location %}
         <p>
@@ -24,5 +26,6 @@
                 <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">编辑用户资料</a>
             {% endif %}
         </p>
+        </div>
     </div>
 {% endblock %}
