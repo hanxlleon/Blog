@@ -11,3 +11,4 @@ Werkzeug==0.10
 alembic==0.7.4
 itsdangerous==0.24
 virtualenv==12.0.5
+ForgeryPy==0.1

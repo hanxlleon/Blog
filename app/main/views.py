@@ -25,7 +25,7 @@ def user(username):
     usr = User.query.filter_by(username=username).first()
     if usr is None:
         abort(404)
-    posts = user.posts.order_by(Post.timestamp.desc()).all()
+    posts = usr.posts.order_by(Post.timestamp.desc()).all()
     return render_template('user.html', user=usr, posts=posts)
 
 
