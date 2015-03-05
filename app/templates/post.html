@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
 
-</body>
-</html>
+{% block title %}文章链接{% endblock %}
+
+{% block page_content %}
+{% include '_posts.html' %}
+    <h4 id="comments">Comments</h4>
+    <div class="comment-form">
+        {{ wtf.quick_form(form) }}
+    </div>
+    {% include '_comments.html' %}
+    {% if pagination %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=posts[0].id) }}
+    </div>
+    {% endif %}
+{% endblock %}

@@ -2,6 +2,7 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length
+from flask.ext.pagedown.fields import PageDownField
 
 
 class EditProfileForm(Form):
@@ -11,5 +12,10 @@ class EditProfileForm(Form):
 
 
 class PostForm(Form):
-    body = TextAreaField(u'有什么要说的？', validators=[DataRequired()])
+    body = PageDownField(u'写博客？', validators=[DataRequired()])
+    submit = SubmitField(u'提交')
+
+
+class CommentForm(Form):
+    body = StringField('', validators=[DataRequired()])
     submit = SubmitField(u'提交')
