@@ -15,4 +15,5 @@ Flask, Bootstrap, Blog
 
 #Sample
 ![image](https://github.com/hanxlleon/Blog/raw/master/sample/sample1.png)
+![image](https://github.com/hanxlleon/Blog/raw/master/sample/sample3.png)
 ![image](https://github.com/hanxlleon/Blog/raw/master/sample/sample2.png)
