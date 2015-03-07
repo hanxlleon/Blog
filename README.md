@@ -12,3 +12,7 @@ Flask, Bootstrap, Blog
 `source venv/bin/activate`
 
 `pip install -r requirements.txt`
+
+#Sample
+![image](https://github.com/hanxlleon/Blog/raw/master/sample/sample1.jpg)
+![image](https://github.com/hanxlleon/Blog/raw/master/sample/sample2.jpg)
