@@ -1,2 +1,14 @@
 # Blog
+
 Flask, Bootstrap, Blog
+
+#Installation
+`git clone https://github.com/hanxlleon/Blog.git`
+
+`cd Blog`
+
+`virtualenv venv`
+
+`source venv/bin/activate`
+
+`pip install -r requirements.txt`
